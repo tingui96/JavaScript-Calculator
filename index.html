@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="app.css">
+    </head>
+    <body>
+    <div id="app">
+        <div class="calculator">
+            <div class="formulaScreen"></div>
+            <div class="outputScreen" id="display">0</div>
+            <div>
+                <button class="jumbo btn" id="clear" value="AC" style="background-color: red;">AC</button>
+                <button class="btn" id="divide" value="/">/</button>
+                <button class="btn" id="multiply" value="*">x</button>
+                <button class="btn" id="add" value="+">+</button>
+                <button class="btn" id="subtract" value="-">-</button>
+                <button class="btn" id="seven" value="7">7</button>
+                <button class="btn" id="eight" value="8">8</button>
+                <button class="btn" id="nine" value="9">9</button>                
+                <button class="btn" id="four" value="4">4</button>
+                <button class="btn" id="five" value="5">5</button>
+                <button class="btn" id="six" value="6">6</button>
+                <button class="btn" id="one" value="1">1</button>
+                <button class="btn" id="two" value="2">2</button>
+                <button class="btn" id="three" value="3">3</button>
+                <button class="btn" id="zero" value="0">0</button>
+                <button class="btn" id="decimal" value=".">.</button>
+                <button class="btn" id="equals" value="=" style="background-color: blue;">=</button>
+            </div>
+        </div>
+    </div>
+    </body>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js'></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'></script>
+    <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+    <script>
+        $(document).ready(function() {
+            var entry = "";
+            var log = "0";
+            var eqn = "";
+            var history = "";
+            $(".btn").click(function() {
+                entry = $(this).attr("value");
+                switch(entry) {        
+                  case "AC":
+                    log = "0";
+                    history = "0";
+                    eqn = "";
+                    break;
+                case ".":
+                    if(log[log.length -1] !== '.' && log.split('.').length === 1)
+                        {
+                            log += ".";
+                            eqn += "."
+                        } 
+                    break;
+                case "CE":
+                    if (log.length <= 1) 
+                        log = "0";                    
+                    else 
+                      log = log.substring(0, log.length-1);
+                    break;
+                
+                case "-":
+                    if(log === '0')
+                        eqn += entry
+                    else
+                    {
+                        eqn += entry;
+                        log = "0";
+                    }
+                    break;
+                case "+":
+                case "*":
+                case "/":
+                    if(history!=="" && history !== "0")
+                        entry = log + entry;
+                    if(eqn[eqn.length-1] === "+" || eqn[eqn.length-1] === "*" || eqn[eqn.length-1] === "/" || eqn[eqn.length-1] === "-")
+                    {
+                        if(eqn[eqn.length-2] === "+" || eqn[eqn.length-2] === "*" || eqn[eqn.length-2] === "/")
+                            eqn = eqn.substring(0,eqn.length - 1);
+                        eqn = eqn.substring(0,eqn.length-1) + entry;
+                        log = "0";
+                    }
+                    else
+                    {
+                        eqn += entry;
+                        log = "0";
+                    }
+                    break;
+                case "=":
+                    if(eqn !== "")
+                     { 
+                        log = String(eval(eqn));
+                        history = eqn;
+                        eqn = "";
+                    }
+                    else if (history !== "")
+                    {
+                        var i = history.length - 1;
+                        while(true)
+                        {                            
+                            if(history[i] === "+" || history[i] === "-" || history[i] === "*" || history[i] === "/")
+                                break
+                            i--
+                        }
+                        history += history.substring(i);
+                        log = String(eval(history));
+                        eqn = "";
+                    }
+                    
+                    break;
+                default:
+                    if (log === "0") 
+                        log = entry;
+                    else 
+                        log += entry;
+                        eqn += entry;
+        
+                    break;
+                }
+                if (log.length >= 12) 
+                  log = log.substring(0, 12);
+    
+                $(".outputScreen").html(log);
+                if (eqn === "") 
+                  $(".formulaScreen").html(history);
+                else 
+                    $(".formulaScreen").html(eqn);
+            })
+        });
+    </script>
+</html>
